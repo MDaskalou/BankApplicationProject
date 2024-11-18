@@ -2,14 +2,18 @@
 {
     public class Customer
     {
-        public string CustomerId { get; set; }
-        public string FullName { get; set; }
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public int PhoneNumber { get; set; }
-        public int PersonalNumber { get; set; }
+        public string? CustomerId { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PersonalNumber { get; set; }
+        public string? Password { get; set; }
 
-        public Customer(string customerId, string fullName, string address, string email, int phoneNumber, int personalNumber)
+        public Customer(){}
+
+        public Customer(string s, string? customerId, string? fullName, string? address, string? email,
+            string? phoneNumber, string? personalNumber, string? password)
         {
             CustomerId = customerId;
             FullName = fullName;
@@ -17,6 +21,7 @@
             Email = email;
             PhoneNumber = phoneNumber;
             PersonalNumber = personalNumber;
+            Password = password;
         }
 
         public List<Account> GetAccounts()

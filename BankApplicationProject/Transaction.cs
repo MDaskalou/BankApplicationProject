@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace BankApplicationProject;
+﻿namespace BankApplicationProject;
 
 
 // Transaction-klassen representerar en finansiell transaktion som utförs på ett bankkonto

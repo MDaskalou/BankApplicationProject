@@ -9,7 +9,7 @@ public class Account
     public decimal Balance { get; set; }
     public AccountType Type { get; set; }
     public DateTime OpeningDate { get; set; }
-    public string CustomerId { get; set; }
+    public string? CustomerId { get; set; }
 
 
     //Metod för att sätta in pengar

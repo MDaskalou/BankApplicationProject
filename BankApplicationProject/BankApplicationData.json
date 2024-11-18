@@ -1,25 +1,9 @@
 ﻿{
-  "customers": [
-    {
-      "costumerID": "",
-      "fullname": "",
-      "adress": "",
-      "email": "",
-      "phonenumber": "",
-      "personalnumber":""
+  "customers": [],
 
-    }
-  ],
-  "accounts": [
-    {
-      "accountnumber": "",
-      "balance": ""
-    }
-  ],
-  "transactions": [
-    {
-      "transactionID": "",
-      "amount": ""
-    }
-  ]
+
+  "accounts": [],
+
+
+  "transactions": []
 }

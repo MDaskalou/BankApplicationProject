@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BankApplicationProject;
 
@@ -7,6 +6,34 @@ public static class FileHandler
 {
     private const string AccountsFilePath = "accounts.json";
     private const string TransactionsFilePath = "transactions.json";
+    private const string CustomersFilePath = "customers.json";
+
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+
+    public static List<Customer> LoadCustomersFromFile()
+    {
+        if (!File.Exists(CustomersFilePath))
+            return new List<Customer>();
+
+        var jsonData = File.ReadAllText(CustomersFilePath);
+        return JsonSerializer.Deserialize<List<Customer>>(jsonData) ?? new List<Customer>();
+    }
+    // Spara kunder till JSON
+    private static void WriteCustomersToFile(List<Customer> customersData)
+    {
+        var jsonData = JsonSerializer.Serialize(customersData, JsonSerializerOptions);
+        File.WriteAllText(CustomersFilePath, jsonData);
+    }
+
+    public static void AddCustomerToFile(Customer newCustomer)
+    {
+        var customersData = LoadCustomersFromFile();
+        customersData.Add(newCustomer);
+        WriteCustomersToFile(customersData);
+    }
+
+
 
     //Metod för att ladda konton från Json
     public static List<Account> LoadAcountsFromFile()
@@ -17,14 +44,14 @@ public static class FileHandler
     }
 
     //Metod för att skriva konton till Jsonfil
-    public static void WriteAccountsToFile(List<Account> accountsData)
+    private static void WriteAccountsToFile(List<Account> accountsData)
     {
         var jsonData = JsonSerializer.Serialize(accountsData, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(AccountsFilePath, jsonData);
     }
 
     //Metod för att ladda transaktioner från en jsonfil
-    public static List<Transaction> LoadTransactionsFromFile()
+    private static List<Transaction> LoadTransactionsFromFile()
     {
         if (!File.Exists(TransactionsFilePath)) return new List<Transaction>();
         var jsonData = File.ReadAllText(TransactionsFilePath);
@@ -32,7 +59,7 @@ public static class FileHandler
     }
 
     // Metod för att skriva transaktioner till en JSON-fil
-    public static void WriteTransactionsToFile(List<Transaction> transactionsData)
+    private static void WriteTransactionsToFile(List<Transaction> transactionsData)
     {
         var jsonData = JsonSerializer.Serialize(transactionsData, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(TransactionsFilePath, jsonData);
@@ -73,3 +100,4 @@ public static class FileHandler
     }
 
 }
+
