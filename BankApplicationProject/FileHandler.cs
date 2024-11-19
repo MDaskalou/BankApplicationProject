@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using static BankApplicationProject.FileHandler;
+
 
 namespace BankApplicationProject;
 
@@ -24,12 +26,15 @@ public static class FileHandler
     {
         var jsonData = JsonSerializer.Serialize(customersData, JsonSerializerOptions);
         File.WriteAllText(CustomersFilePath, jsonData);
+        Console.WriteLine($"Kunder sparade{CustomersFilePath}");
     }
 
     public static void AddCustomerToFile(Customer newCustomer)
     {
+        Console.Write("Adding customer to file..");
         var customersData = LoadCustomersFromFile();
         customersData.Add(newCustomer);
+        Console.WriteLine($"Customer added: {newCustomer.FullName}");
         WriteCustomersToFile(customersData);
     }
 
@@ -98,6 +103,7 @@ public static class FileHandler
         transactionsData.Add(transaction);
         WriteTransactionsToFile(transactionsData);
     }
+
 
 }
 

@@ -19,7 +19,7 @@ public class UserMenuRegistrationOrLogin
             Console.WriteLine("2:Logga in.");
             Console.WriteLine("3:Avsluta programmet.");
 
-            string choice = Console.ReadLine();
+            string? choice = Console.ReadLine();
 
                 switch (choice)
                 {
