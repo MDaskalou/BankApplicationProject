@@ -1,4 +1,6 @@
-﻿namespace BankApplicationProject.RegistrationOrLogin;
+﻿using BankApplicationProject.UserMenu;
+
+namespace BankApplicationProject.RegistrationOrLogin;
 
 public class Login
 {
@@ -43,6 +45,9 @@ public class Login
                     {
                         Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
                         isLoggedIn = true;
+
+                        var loggedInMenu = new LoggedInMenu();
+                        loggedInMenu.LoggedInMenuOptions();
                         break;
                     }
                     else

@@ -1,4 +1,6 @@
 ﻿using static System.Console;
+using static BankApplicationProject.FileHandler;
+
 
 namespace BankApplicationProject.RegistrationOrLogin;
 
@@ -6,19 +8,24 @@ public class Registration
 {
     public static void RegisterNewCostumer()
     {
+
         string? fullName;
-        string? adress;
+        string? address;
         string? email;
         string? phoneNumber;
         string? personalNumber;
         string? password = null;
         string? confirmationPassword = null;
+        string? customerId = null;
+
+
 
         bool isValidInfo = false;
 
         try
         {
-            var existingCustomers = FileHandler.LoadCustomersFromFile();
+
+            List<Customer> existingCustomers = FileHandler.LoadCustomersFromFile();
 
             do
             {
@@ -41,8 +48,8 @@ public class Registration
             {
 
                 WriteLine("Vänligen ange adress");
-                adress = ReadLine();
-                isValidInfo = !string.IsNullOrWhiteSpace(adress);
+                address = ReadLine();
+                isValidInfo = !string.IsNullOrWhiteSpace(address);
 
                 if (!isValidInfo)
                 {
@@ -53,7 +60,7 @@ public class Registration
 
             isValidInfo = false;
 
-            Console.WriteLine($"Adressen har registrerat: {adress}");
+            Console.WriteLine($"Adressen har registrerat: {address}");
 
             do
             {
@@ -129,14 +136,21 @@ public class Registration
                 {
                     Console.WriteLine("Lösenorden matchar inte. Vänligen försök igen.");
                 }
+                Console.WriteLine("Lösenordet är bekräftat.");
 
             } while (confirmationPassword == null || password != confirmationPassword);
 
-            Console.WriteLine("Lösenordet är bekräftat.");
 
-            var newCustomer = new Customer(Guid.NewGuid().ToString(), fullName, adress, email, phoneNumber, personalNumber, password, confirmationPassword);
 
-            FileHandler.AddCustomerToFile(newCustomer);
+            customerId = Customer.GenerateCustomerIdNumber(existingCustomers.GetEnumerator());
+
+
+            var newCustomer = new Customer(customerId, fullName, address, email, phoneNumber, personalNumber, password, confirmationPassword);
+
+            FileHandler.AddCustomerToFile(newCustomer); // Korrekt
+            Console.WriteLine($"Kund: {fullName} är regristrerad med Kund ID {customerId}");
+
+
         }
         catch (Exception ex)
         {
@@ -160,13 +174,14 @@ public class Registration
     {
         try
         {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email;
+            var address = new System.Net.Mail.MailAddress(email);
+            return address.Address == email;
         }
         catch
         {
             return false;
         }
     }
+
 
 }
