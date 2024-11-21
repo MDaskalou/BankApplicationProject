@@ -8,7 +8,7 @@ public class Login
 
         try
         {
-            var customers = FileHandler.LoadCustomersFromFile();
+            var customers = FileHandlerCustomer.LoadCustomersFromFile();
 
             string? personalNumber;
             string? password;

@@ -18,7 +18,7 @@ public class Registration
 
         try
         {
-            var existingCustomers = FileHandler.LoadCustomersFromFile();
+            var existingCustomers = FileHandlerCustomer.LoadCustomersFromFile();
 
             do
             {
@@ -136,7 +136,7 @@ public class Registration
 
             var newCustomer = new Customer(Guid.NewGuid().ToString(), fullName, adress, email, phoneNumber, personalNumber, password, confirmationPassword);
 
-            FileHandler.AddCustomerToFile(newCustomer);
+            FileHandlerCustomer.AddCustomerToFile(newCustomer);
         }
         catch (Exception ex)
         {

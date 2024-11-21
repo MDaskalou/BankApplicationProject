@@ -24,27 +24,15 @@
             Password = password;
         }
 
-        public List<Account> GetAccounts()
+        public List<Customer> GetAccounts()
         {
-            return FileHandler.LoadAccountsFromFile().FindAll(a => a.CustomerId == CustomerId);
-        }
-
-        public void CreateAccount(AccountType type)
-        {
-            var newAccount = new Account
-            {
-                AccountNumber = GenerateAccountNumber(),
-                Balance = 0,
-                Type = type,
-                OpeningDate = DateTime.Now,
-                CustomerId = CustomerId
-            };
-            FileHandler.SaveAccountToFile(newAccount);
-
+            return FileHandlerCustomer.LoadCustomersFromFile().FindAll(customer => customer.CustomerId == CustomerId);
         }
 
 
-        private string GenerateAccountNumber()
+
+
+        private string GenerateCustomerIdNumber()
         {
             return $"ACC{new Random().Next(100000, 999999)}";
         }
