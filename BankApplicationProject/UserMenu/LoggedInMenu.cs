@@ -2,9 +2,9 @@
 
 public class LoggedInMenu
 {
-    public bool LoggedInMenuOptions()
+    public static bool LoggedInMenuOptions(Customer matchingCustomer)
     {
-        Console.WriteLine("Du är inloggad.");
+        Console.WriteLine($"Du är nu inloggad {matchingCustomer.FullName}.");
         Console.WriteLine("Välj ett av alternativen nedan.");
         Console.WriteLine("1:Profil.");
         Console.WriteLine("2:Lönekonto.");

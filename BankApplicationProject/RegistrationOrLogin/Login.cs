@@ -1,4 +1,6 @@
-﻿namespace BankApplicationProject.RegistrationOrLogin;
+﻿using BankApplicationProject.UserMenu;
+
+namespace BankApplicationProject.RegistrationOrLogin;
 
 public class Login
 {
@@ -13,6 +15,7 @@ public class Login
             string? personalNumber;
             string? password;
             bool isLoggedIn = false;
+            Customer? matchingCustomer = null;
 
             Console.WriteLine("Välkommen till Mikaels Bank");
 
@@ -22,19 +25,23 @@ public class Login
                 Console.WriteLine("Vänligen skriv ditt personnummer.");
                 personalNumber = Console.ReadLine();
 
-                if (string.IsNullOrWhiteSpace(personalNumber) || personalNumber.Length != 10 || !personalNumber.All(char.IsDigit))
+                if (string.IsNullOrWhiteSpace(personalNumber) || personalNumber.Length != 10 ||
+                    !personalNumber.All(char.IsDigit))
                 {
                     Console.WriteLine("Felaktig personnummer. Försök igen.");
                     continue;
                 }
-                var matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
 
-                if (matchingCustomer != null)
+                matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
+
+                if (matchingCustomer == null)
                 {
                     Console.WriteLine("Personnummer är inte regristrerad.Försök igen.");
                 }
+            } while (isLoggedIn);
 
-                do
+
+            do
                 {
                     Console.WriteLine("vänligen skriv ditt lösenord.");
                     password = Console.ReadLine();
@@ -43,6 +50,8 @@ public class Login
                     {
                         Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
                         isLoggedIn = true;
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     }
                     else
@@ -51,8 +60,7 @@ public class Login
                     }
                 } while (isLoggedIn);
 
-            } while (isLoggedIn);
-
+                LoggedInMenu.LoggedInMenuOptions(matchingCustomer);
         }
         catch (Exception ex)
         {
