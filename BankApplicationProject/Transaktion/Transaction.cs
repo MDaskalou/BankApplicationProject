@@ -50,7 +50,7 @@ public class Transaction
             }
 
             account.GetTransactions().Add(this);
-            FileHandler.SaveTransactionsToFile(this);
+            FileHandlerTransaktions.WriteTransactionsToFile(this);
 
         }
         catch (Exception e)
@@ -61,25 +61,11 @@ public class Transaction
 
     }
 
-    //private void AppendTransactionToFile(Transaction transaction)
-    //{
-      //  string filePath = "transaction_log.txt";
-        //string transactionInfo = $"{transaction.Date}\t{transaction.Amount}\t{transaction.TransactionType}";
-        //File.AppendAllText(filePath, transactionInfo + Environment.NewLine);
-        //throw new NotImplementedException();
-    //}
-
-    // Metod för att hämta en detaljerad beskrivning av transaktionen som en sträng
-
     public string GetDetails()
     {
         return $"Transaction ID {TransactionID} Date {Date} Amount {Amount} Description {Description}";
     }
 
-    //private void SaveTransaction(Transaction transaction)
-    //{
-     //   AppendTransactionToFile(transaction);
-    //}
 
 
 }

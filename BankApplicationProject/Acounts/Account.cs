@@ -11,6 +11,28 @@ public class Account
     public DateTime OpeningDate { get; set; }
     public string? CustomerId { get; set; }
 
+    public Account CreateAccount(string customerId, AccountType type)
+    {
+        var newAccount = new Account
+        {
+            AccountNumber = GenerateAccountNumber(),
+            Balance = 0,
+            Type = type,
+            OpeningDate = DateTime.Now,
+            CustomerId = customerId
+        };
+
+        var accounts = FileHandlerAccounts.LoadAccountsFromFile();
+        accounts.Add(newAccount);
+        FileHandlerAccounts.WriteAccountsToFile(accounts);
+        return newAccount;
+    }
+
+    private string GenerateAccountNumber()
+    {
+        return $"ACC{new Random().Next(1000, 9999)}";
+    }
+
 
     //Metod för att sätta in pengar
     public void Deposit(decimal amount)

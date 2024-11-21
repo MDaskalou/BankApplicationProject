@@ -10,11 +10,20 @@ public class Login
 
         try
         {
-            var customers = FileHandler.LoadCustomersFromFile();
+            var customers = FileHandlerCustomer.LoadCustomersFromFile();
+
+            Console.WriteLine("Kunder vid inloggning:");
+            foreach (var customer in customers)
+            {
+                Console.WriteLine($"Personnummer: {customer.PersonalNumber}, Namn: {customer.FullName}");
+            }
 
             string? personalNumber;
             string? password;
             bool isLoggedIn = false;
+            bool isValidCustomer = false;
+
+            Customer? matchingCustomer = null;
 
             Console.WriteLine("Välkommen till Mikaels Bank");
 
@@ -29,33 +38,37 @@ public class Login
                     Console.WriteLine("Felaktig personnummer. Försök igen.");
                     continue;
                 }
-                var matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
+
+                matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
 
                 if (matchingCustomer != null)
                 {
                     Console.WriteLine("Personnummer är inte regristrerad.Försök igen.");
                 }
 
-                do
+
+
+            } while (isValidCustomer );
+
+            do
+            {
+
+                Console.WriteLine("vänligen skriv ditt lösenord.");
+                password = Console.ReadLine();
+
+                if(matchingCustomer.Password == password)
                 {
-                    Console.WriteLine("vänligen skriv ditt lösenord.");
-                    password = Console.ReadLine();
+                    Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
+                    isLoggedIn = true;
 
-                    if(matchingCustomer.Password == password)
-                    {
-                        Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
-                        isLoggedIn = true;
-
-                        var loggedInMenu = new LoggedInMenu();
-                        loggedInMenu.LoggedInMenuOptions();
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Felaktigt lösenord. Försök igen.");
-                    }
-                } while (isLoggedIn);
-
+                    var loggedInMenu = new LoggedInMenu();
+                    loggedInMenu.LoggedInMenuOptions();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Felaktigt lösenord. Försök igen.");
+                }
             } while (isLoggedIn);
 
         }
