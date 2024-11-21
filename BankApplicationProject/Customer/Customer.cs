@@ -1,29 +1,23 @@
 ﻿namespace BankApplicationProject
-
-
-
 {
     public class Customer
     {
         public string? CustomerId { get; set; }
         public string? FullName { get; set; }
-        public string? Adress { get; set; }
+        public string? Address { get; set; }
         public string? Email { get; set; }
-
         public string? PhoneNumber { get; set; }
-
         public string? PersonalNumber { get; set; }
         public string? Password { get; set; }
-        public string Address { get; set; }
 
         public Customer(){}
 
-        public Customer (string? customerId, string? fullName, string? adress, string? email,
+        public Customer(string s, string? customerId, string? fullName, string? address, string? email,
             string? phoneNumber, string? personalNumber, string? password)
         {
             CustomerId = customerId;
             FullName = fullName;
-            Adress = adress;
+            Address = address;
             Email = email;
             PhoneNumber = phoneNumber;
             PersonalNumber = personalNumber;
@@ -32,20 +26,27 @@
 
         public List<Account> GetAccounts()
         {
-            return FileHandlerAccounts.LoadAccountsFromFile().FindAll(a => a.CustomerId == CustomerId);
+            return FileHandler.LoadAccountsFromFile().FindAll(a => a.CustomerId == CustomerId);
         }
 
-        public static string GenerateCustomerIdNumber(IEnumerable<Customer>existingCustomers )
+        public void CreateAccount(AccountType type)
         {
-            string newCustomerId;
-            var random = new Random();
-
-            do
+            var newAccount = new Account
             {
-                newCustomerId = $"CUST{random.Next(100000, 999999)}";
-            } while (existingCustomers.Any(customer => customer.CustomerId == newCustomerId));
+                AccountNumber = GenerateAccountNumber(),
+                Balance = 0,
+                Type = type,
+                OpeningDate = DateTime.Now,
+                CustomerId = CustomerId
+            };
+            FileHandler.SaveAccountToFile(newAccount);
 
-            return newCustomerId;
+        }
+
+
+        private string GenerateAccountNumber()
+        {
+            return $"ACC{new Random().Next(100000, 999999)}";
         }
     }
 

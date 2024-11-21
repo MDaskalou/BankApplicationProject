@@ -1,6 +1,4 @@
-﻿using BankApplicationProject.UserMenu;
-
-namespace BankApplicationProject.RegistrationOrLogin;
+﻿namespace BankApplicationProject.RegistrationOrLogin;
 
 public class Login
 {
@@ -10,20 +8,11 @@ public class Login
 
         try
         {
-            var customers = FileHandlerCustomer.LoadCustomersFromFile();
-
-            Console.WriteLine("Kunder vid inloggning:");
-            foreach (var customer in customers)
-            {
-                Console.WriteLine($"Personnummer: {customer.PersonalNumber}, Namn: {customer.FullName}");
-            }
+            var customers = FileHandler.LoadCustomersFromFile();
 
             string? personalNumber;
             string? password;
             bool isLoggedIn = false;
-            bool isValidCustomer = false;
-
-            Customer? matchingCustomer = null;
 
             Console.WriteLine("Välkommen till Mikaels Bank");
 
@@ -38,37 +27,30 @@ public class Login
                     Console.WriteLine("Felaktig personnummer. Försök igen.");
                     continue;
                 }
-
-                matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
+                var matchingCustomer = customers.FirstOrDefault(customer => customer.PersonalNumber == personalNumber);
 
                 if (matchingCustomer != null)
                 {
                     Console.WriteLine("Personnummer är inte regristrerad.Försök igen.");
                 }
 
-
-
-            } while (isValidCustomer );
-
-            do
-            {
-
-                Console.WriteLine("vänligen skriv ditt lösenord.");
-                password = Console.ReadLine();
-
-                if(matchingCustomer.Password == password)
+                do
                 {
-                    Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
-                    isLoggedIn = true;
+                    Console.WriteLine("vänligen skriv ditt lösenord.");
+                    password = Console.ReadLine();
 
-                    var loggedInMenu = new LoggedInMenu();
-                    loggedInMenu.LoggedInMenuOptions();
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Felaktigt lösenord. Försök igen.");
-                }
+                    if(matchingCustomer.Password == password)
+                    {
+                        Console.WriteLine($"Inloggning lyckades! Välkommen, {matchingCustomer.FullName}!");
+                        isLoggedIn = true;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Felaktigt lösenord. Försök igen.");
+                    }
+                } while (isLoggedIn);
+
             } while (isLoggedIn);
 
         }
