@@ -3,29 +3,20 @@
 namespace BankApplicationProject;
 
 //Account klass representar bankkonto med grundläggande funktioner
-public class Account
+public abstract class Account
 {
-    public string AccountNumber { get; set; }
-    public decimal Balance { get; set; }
-    public AccountType Type { get; set; }
-    public DateTime OpeningDate { get; set; }
-    public string? CustomerId { get; set; }
+    public string AccountNumber { get; protected set; }
+    public decimal Balance { get; protected set; }
+    public DateTime OpeningDate { get; protected set; }
+    public string? CustomerId { get; protected set; }
+    public string Type { get; set; }
 
-    public Account CreateAccount(string customerId, AccountType type)
+    protected Account(string customerId)
     {
-        var newAccount = new Account
-        {
-            AccountNumber = GenerateAccountNumber(),
-            Balance = 0,
-            Type = type,
-            OpeningDate = DateTime.Now,
-            CustomerId = customerId
-        };
-
-        var accounts = FileHandlerAccounts.LoadAccountsFromFile();
-        accounts.Add(newAccount);
-        FileHandlerAccounts.WriteAccountsToFile(accounts);
-        return newAccount;
+        AccountNumber = GenerateAccountNumber();
+        Balance = 0;
+        OpeningDate = DateTime.Now;
+        CustomerId = customerId;
     }
 
     private string GenerateAccountNumber()
@@ -33,51 +24,39 @@ public class Account
         return $"ACC{new Random().Next(1000, 9999)}";
     }
 
-
-    //Metod för att sätta in pengar
-    public void Deposit(decimal amount)
+    public virtual void Deposit(decimal amount)
     {
-        var balance = Balance +- amount;
+        if (amount <= 0)
+        {
+            throw new ArgumentException("Insättningen måste vara positiv", nameof(amount));
+        }
+
+        Balance += amount;
         SaveAccount();
     }
 
-    //metod för att kunna ta ut pengar
-
-    public void Withdraw(decimal amount)
+    public virtual bool Withdraw(decimal amount)
     {
-        //kontrollera om det finns tillräkligt med pengar
-        if (amount <= Balance)
+        if (amount <= 0)
         {
-            Balance -= amount;
-            SaveAccount();
+            throw new ArgumentException("Utdraget måste vara positiv", nameof(amount));
         }
-        else
+
+        if (amount > Balance)
         {
-            throw new InvalidOperationException("Insufficient balance");
+            return false;
         }
-    }
-    // Metod för att hämta transaktioner kopplade till kontot
-    public List<Transaction> GetTransactions()
-    {
-        return new List<Transaction>();
+
+        Balance -= amount;
+        SaveAccount();
+        return true;
     }
 
-    private void SaveAccount()
+    protected virtual void SaveAccount()
     {
-        SaveAccountToFile(this);
-    }
-
-    private void SaveAccountToFile(Account account)
-    {
-        string filePath = "accounts_log.json";
-        string accountJson = JsonSerializer.Serialize(account, new JsonSerializerOptions { WriteIndented = true });
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "accounts.json");
+        string accountJson = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
         File.AppendAllText(filePath, accountJson + Environment.NewLine);
-        //throw new NotImplementedException();
     }
-}
-public enum AccountType
-{
-    Savings,
-    Checking,
-    Business
+
 }

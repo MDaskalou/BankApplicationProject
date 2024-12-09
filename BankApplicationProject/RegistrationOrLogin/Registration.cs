@@ -1,4 +1,5 @@
-﻿using static System.Console;
+﻿using System.ComponentModel.Design;
+using static System.Console;
 
 namespace BankApplicationProject.RegistrationOrLogin;
 
@@ -13,8 +14,9 @@ public class Registration
         string? personalNumber;
         string? password = null;
         string? confirmationPassword = null;
-
-        bool isValidInfo = false;
+        SalaryAccount? salaryAccount = null;
+        SavingsAccount? savingsAccount = null;
+        InvestmentAccount? investmentAccount = null;
 
         try
         {
@@ -24,34 +26,27 @@ public class Registration
             {
                 WriteLine("Vänligen ange ditt namn (Både förnamn och efternamn)");
                 fullName = ReadLine();
-                isValidInfo = !string.IsNullOrWhiteSpace(fullName);
 
-                if (!isValidInfo)
+                if (string.IsNullOrWhiteSpace(fullName))
                 {
                     WriteLine("Ogiltigt namn. Vänligen försök igen.");
                 }
-            } while (!isValidInfo);
-
-            isValidInfo = false;
+            } while (string.IsNullOrWhiteSpace(fullName));
 
             Console.WriteLine($"Namnet har registrerat: {fullName}");
-
 
             do
             {
 
                 WriteLine("Vänligen ange adress");
                 adress = ReadLine();
-                isValidInfo = !string.IsNullOrWhiteSpace(adress);
 
-                if (!isValidInfo)
+                if (string.IsNullOrWhiteSpace(adress))
                 {
                     WriteLine("Ogiltig Adress. Vänligen försök igen.");
                 }
 
-            } while (!isValidInfo);
-
-            isValidInfo = false;
+            } while (string.IsNullOrWhiteSpace(adress));
 
             Console.WriteLine($"Adressen har registrerat: {adress}");
 
@@ -59,20 +54,19 @@ public class Registration
             {
                 WriteLine("Vänligen ange din email");
                 email = ReadLine();
-                isValidInfo = !string.IsNullOrWhiteSpace(email) && IsValidEmail(email);
 
-                if (!isValidInfo)
+                if (string.IsNullOrWhiteSpace(email))
                 {
                     WriteLine("Ogiltig email. Vänligen försök igen");
+                    continue;
                 }
-
 
             if (existingCustomers.Any(customer => customer.Email == email))
             {
                 Console.WriteLine("Denna e-posten är redan registrerad.");
                 return;
             }
-            } while (!isValidInfo);
+            } while (string.IsNullOrWhiteSpace(email));
 
             Console.WriteLine($"Emailet har registrerat: {email}");
 
@@ -81,13 +75,11 @@ public class Registration
                 Console.WriteLine("Vänligen ange ditt telefonnummer:");
                 phoneNumber = Console.ReadLine();
 
-                isValidInfo = !string.IsNullOrWhiteSpace(phoneNumber) && phoneNumber.All(char.IsDigit);
-
-                if (!isValidInfo)
+                if (string.IsNullOrWhiteSpace(phoneNumber) || !phoneNumber.All(char.IsDigit))
                 {
                     Console.WriteLine("Ogiltigt nummer. Vänligen försök igen.");
                 }
-            } while (!isValidInfo);
+            } while (string.IsNullOrWhiteSpace(phoneNumber) || !phoneNumber.All(char.IsDigit));
 
             Console.WriteLine($"Telefonnummer registrerat: {phoneNumber}");
 
@@ -96,19 +88,17 @@ public class Registration
                 Console.WriteLine("Vänligen ange ditt personnummer, 10 siffror:");
                 personalNumber = Console.ReadLine();
 
-                isValidInfo = !string.IsNullOrWhiteSpace(personalNumber) && personalNumber.Length == 10 &&
-                              personalNumber.All(char.IsDigit);
-
-                if (!isValidInfo)
+                if (string.IsNullOrWhiteSpace(personalNumber) || personalNumber.Length != 10 || !personalNumber.All(char.IsDigit) )
                 {
                     Console.WriteLine("Ogiltigt personnummer. Vänligen försök igen.");
+                    continue;
                 }
                 else if (existingCustomers.Any(customer => customer.PersonalNumber == personalNumber))
                 {
                     Console.WriteLine("Detta personnummer är redan registrerat.");
                     return;
                 }
-            } while (!isValidInfo);
+            } while (string.IsNullOrWhiteSpace(personalNumber) || !personalNumber.All(char.IsDigit) || personalNumber.Length != 10);
 
             do
             {
@@ -133,10 +123,145 @@ public class Registration
             } while (confirmationPassword == null || password != confirmationPassword);
 
             Console.WriteLine("Lösenordet är bekräftat.");
+            Console.ReadKey();
+            Console.Clear();
 
-            var newCustomer = new Customer(Guid.NewGuid().ToString(), fullName, adress, email, phoneNumber, personalNumber, password, confirmationPassword);
+
+            Console.WriteLine("Nu ska vi regristrera dina konton");
+
+            bool isValidInput = false;
+
+            do
+            {
+
+            Console.Write("Vill du skapa ett lönekonto(Ja/Nej) ");
+            var response = Console.ReadLine().ToLower();
+
+            if (response == "ja")
+            {
+                Console.Write("Hur mycket pengar vill du sätta in?: ");
+                if (decimal.TryParse(Console.ReadLine(), out decimal initalDeposit) && initalDeposit > 0)
+                {
+                   salaryAccount = new SalaryAccount(Guid.NewGuid().ToString(), initalDeposit);
+                    Console.WriteLine($"Lönekonto är regristrerad och {initalDeposit} kr är insatt i ditt konto");
+
+                    Console.Write(" Vilken månadslön har du?");
+                    if (decimal.TryParse(Console.ReadLine(), out decimal monthlyIncome) && monthlyIncome > 0)
+                    {
+                        salaryAccount.ProcessMonthlyIncome(monthlyIncome);
+                        Console.WriteLine($"Din månadslön {monthlyIncome} kommer nu sättas in i ditt konto varje månad");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ogiltig månadsbelopp. Försök igen");
+                        continue;
+                    }
+
+                    isValidInput = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltig belopp.Försök igen");
+                    return;
+                }
+            }
+            else if (response == "nej")
+            {
+                Console.WriteLine("Lönekonto skapas inte");
+                isValidInput = true;
+            }
+            else
+            {
+                Console.WriteLine("Ogiltig svar. Ange Ja eller Nej");
+            }
+
+            } while (!isValidInput);
+
+
+
+            isValidInput = false;
+            do
+            {
+
+            Console.Write("Vill du skapa ett sparkonto? (ja/nej)");
+            var response = Console.ReadLine().ToLower();
+
+            if (response == "ja")
+            {
+                Console.Write("Hur mycket pengar vill du sätta in?: ");
+                Console.ReadLine();
+
+                if (decimal.TryParse(Console.ReadLine(), out decimal initalDeposit) && initalDeposit > 0)
+                {
+                    savingsAccount = new SavingsAccount(Guid.NewGuid().ToString(), 0.02m);
+                    Console.WriteLine($"Sparkonto är regristrerad och beloppet {initalDeposit} kr är insätt i ditt konto ");
+                    isValidInput = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltigt belopp. Försök igen.");
+                }
+            }
+            else if (response == "nej")
+            {
+                Console.WriteLine($"Sparkonto har ej skapats");
+                isValidInput = true;
+            }
+            else
+            {
+                Console.WriteLine("Ogiltig svar. Ange Ja eller Nej");
+            }
+
+            } while (!isValidInput);
+
+            isValidInput = false;
+            do
+            {
+
+            Console.Write("Vill du skapa ett investeringskonto? (ja/nej)");
+            var response = Console.ReadLine().ToLower();
+
+            if (response == "ja")
+            {
+                Console.WriteLine("Hur mycket pengar vill du sätta in i ditt invenstringskonto?");
+                if (decimal.TryParse(Console.ReadLine(), out decimal initalDeposit) && initalDeposit > 0)
+                {
+                    investmentAccount = new InvestmentAccount(Guid.NewGuid().ToString(), 0.07m);
+
+                    Console.WriteLine($"Investeringskonto registrerat, och beloppet: {initalDeposit} kr är insätt i ditt konto.");
+                    isValidInput = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltig belopp. Försök igen.");
+                }
+            }
+            else if (response == "nej")
+            {
+                Console.WriteLine("Invensteringskonto är inte regrstrerad");
+            }
+            else
+            {
+                Console.WriteLine("Ogiltigt svar. Välj mellan ja eller nej");
+            }
+
+
+            } while (!isValidInput);
+
+
+            var newCustomer = new Customer(Guid.NewGuid().ToString(), fullName, adress, email, phoneNumber, personalNumber, password);
+            {
+                newCustomer.SalaryAccount = salaryAccount;
+                newCustomer.SavingsAccount = savingsAccount;
+                newCustomer.InvestmentAccount = investmentAccount;
+            }
+
+
 
             FileHandlerCustomer.AddCustomerToFile(newCustomer);
+
+
         }
         catch (Exception ex)
         {

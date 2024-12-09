@@ -4,7 +4,7 @@ namespace BankApplicationProject;
 
 public class FileHandlerCustomer
 {
-    private const string CustomersFilePath = "data/customers.json";
+    private const string CustomersFilePath = @"C:\BankData\BankApplicationData.json";
     private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
     {
         WriteIndented = true
@@ -27,6 +27,7 @@ public class FileHandlerCustomer
 
     public static void WriteCustomersToFile(List<Customer> customersData)
     {
+
         try
         {
             Console.WriteLine($"Serializing följande data : {JsonSerializer.Serialize(customersData, JsonSerializerOptions)}");
@@ -61,6 +62,33 @@ public class FileHandlerCustomer
             throw;
         }
     }
+
+    public static void SaveupdateCustomersToFile(Customer udateCustomer)
+    {
+        try
+        {
+            var customers = LoadCustomersFromFile();
+            var customerIndex = customers.FindIndex(customer => customer.CustomerId == udateCustomer.CustomerId);
+
+            if (customerIndex != -1)
+            {
+                customers[customerIndex] = udateCustomer;
+
+                var jsonData = JsonSerializer.Serialize(customers, JsonSerializerOptions);
+                File.WriteAllText(CustomersFilePath, jsonData);
+            }
+            else
+            {
+                Console.WriteLine("Kunden kunde inte hittas i filen");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving customers: {ex.Message}");
+            throw;
+        }
+    }
+
 
     private static void EnsureDirectoryExists(string filePath)
     {

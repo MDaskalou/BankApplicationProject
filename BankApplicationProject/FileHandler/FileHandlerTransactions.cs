@@ -2,9 +2,9 @@
 
 namespace BankApplicationProject;
 
-public class FileHandlerTransaktions
+public class FileHandlerTransactions
 {
-    private const string TransactionsFilePath = "data/transactions.json";
+    private const string TransactionsFilePath = @"C:\BankData\BankApplicationData.json";
     private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
     {
         WriteIndented = true

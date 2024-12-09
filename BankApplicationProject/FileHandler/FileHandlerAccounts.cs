@@ -4,7 +4,7 @@ namespace BankApplicationProject;
 
 public class FileHandlerAccounts
 {
-    private const string AccountsFilePath = "data/accounts.json";
+    private const string AccountsFilePath = @"C:\BankData\BankApplicationData.json";
     private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
     {
         WriteIndented = true
@@ -40,6 +40,8 @@ public class FileHandlerAccounts
             throw;
         }
     }
+
+
 
     private static void EnsureDirectoryExists(string filePath)
     {

@@ -10,9 +10,13 @@
         public string? PersonalNumber { get; set; }
         public string? Password { get; set; }
 
+        public SalaryAccount? SalaryAccount { get; set; }
+        public SavingsAccount? SavingsAccount { get; set; }
+        public InvestmentAccount? InvestmentAccount { get; set; }
+
         public Customer(){}
 
-        public Customer(string s, string? customerId, string? fullName, string? address, string? email,
+        public Customer( string? customerId, string? fullName, string? address, string? email,
             string? phoneNumber, string? personalNumber, string? password)
         {
             CustomerId = customerId;
@@ -22,6 +26,8 @@
             PhoneNumber = phoneNumber;
             PersonalNumber = personalNumber;
             Password = password;
+
+
         }
 
         public List<Customer> GetAccounts()
